@@ -1,4 +1,4 @@
-import { secondBase } from "../constants";
+import { baseColor, secondBase } from "../constants";
 
 const MuiOverrides = () => ({
   MuiInputBase: {
@@ -55,6 +55,66 @@ const MuiOverrides = () => ({
   MuiPaper: {
     styleOverrides: {
       root: {},
+    },
+  },
+  MuiPickersDay: {
+    styleOverrides: {
+      root: {
+        "&:hover": {
+          backgroundColor: baseColor,
+        },
+        "&.Mui-selected": {
+          backgroundColor: baseColor,
+          "&:hover": {
+            backgroundColor: baseColor,
+          },
+        },
+      },
+    },
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        "&.MuiClock-amButton": {
+          backgroundColor: baseColor,
+          "&:hover": {
+            backgroundColor: baseColor,
+          },
+        },
+        "&.MuiClock-pmButton": {
+          backgroundColor: baseColor,
+          "&:hover": {
+            backgroundColor: baseColor,
+          },
+        },
+      },
+    },
+  },
+  MuiClock: {
+    styleOverrides: {
+      pin: {
+        backgroundColor: baseColor,
+        "&:hover": {
+          backgroundColor: baseColor,
+        },
+      },
+    },
+  },
+  MuiClockPointer: {
+    styleOverrides: {
+      root: {
+        backgroundColor: baseColor,
+        "&:hover": {
+          backgroundColor: baseColor,
+        },
+      },
+      thumb: {
+        backgroundColor: baseColor,
+        border: `16px solid ${baseColor}`,
+        "&:hover": {
+          backgroundColor: baseColor,
+        },
+      },
     },
   },
 });

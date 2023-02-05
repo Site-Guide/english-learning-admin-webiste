@@ -10,6 +10,8 @@ import UploadCSV from "../modals/UploadCSV";
 import UserTable from "../UserTable/NonActiveUserTable";
 import ActiveUserTable from "../UserTable/ActiveUserTable";
 import NonActiveUserTable from "../UserTable/NonActiveUserTable";
+import DailyTopics from "../AudioVideoCalls/DailyTopics";
+import SetTimeSlot from "../modals/SetTimeSlot";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,7 +49,9 @@ function a11yProps(index) {
 export default function MainPanel() {
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
+  const [openTimeSlotModal, setOpenTimeSlotModal] = React.useState(false);
   const [activeUsers, setActiveUsers] = React.useState(true);
+  const [topicTab, setTopicTab] = React.useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -101,12 +105,40 @@ export default function MainPanel() {
         {activeUsers ? <ActiveUserTable /> : <NonActiveUserTable />}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Container>Audio/video calls</Container>
+        <div style={{ display: "flex" }}>
+          <SubTab
+            onClick={() => setTopicTab(true)}
+            style={{
+              color: topicTab && baseColor,
+            }}
+          >
+            Topics
+          </SubTab>
+          {/* <SubTab
+            onClick={() => setTopicTab(false)}
+            style={{
+              marginLeft: "1rem",
+              color: !topicTab && baseColor,
+            }}
+          >
+            FAQs
+          </SubTab> */}
+          <MuiButton onClick={() => setOpenTimeSlotModal(true)}>
+            Set time slots
+          </MuiButton>
+        </div>
+        {topicTab ? <DailyTopics /> : <DailyTopics />}
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Container>Notification</Container>
       </TabPanel>
       {open && <UploadCSV open={open} handleClose={() => setOpen(false)} />}
+      {openTimeSlotModal && (
+        <SetTimeSlot
+          open={openTimeSlotModal}
+          handleClose={() => setOpenTimeSlotModal(false)}
+        />
+      )}
     </Box>
   );
 }
