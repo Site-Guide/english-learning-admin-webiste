@@ -19,7 +19,7 @@ export const MainBox = styled("div")(({ theme }) => ({
   flexDirection: "column",
   width: "40%",
   padding: "1rem 0",
-  borderRadius: "15px",
+  borderRadius: "8px",
   boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
 
   [theme.breakpoints.down("sm")]: {},

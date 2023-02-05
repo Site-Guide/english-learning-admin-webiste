@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { account } from "../../appwrite";
@@ -13,32 +13,18 @@ import {
 
 function Navbar() {
   const pageStatus = useSelector((state) => state.pageStatusReducer);
-  const [session, setSession] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.authReducer);
   const navigate = useNavigate();
-  const getSession = async () => {
+  const handleSignOut = async () => {
     try {
       const response = await account.listSessions();
       console.log(response);
-      setSession([...response.sessions]);
-      setLoading(false);
+      await account.deleteSession(response.sessions[0].$id);
+      navigate("/auth");
     } catch {
       console.log("No active session found");
-      setLoading(false);
     }
   };
-  const handleSignOut = async () => {
-    await Promise.all(
-      session.map(async (sess) => {
-        await account.deleteSession(sess.$id);
-      })
-    );
-    // setSession([]);
-    navigate("/auth");
-  };
-  useEffect(() => {
-    getSession();
-  }, []);
   return (
     <NavbarContainer>
       <NavbarBox>
@@ -46,7 +32,7 @@ function Navbar() {
         <NavbarPip>|</NavbarPip>
         <NavbarPageStatus>{pageStatus.status}</NavbarPageStatus>
         {pageStatus.status !== "Welcome" &&
-          (!loading ? (
+          (user && !user.id != null ? (
             <MuiButton onClick={handleSignOut}>Log out</MuiButton>
           ) : (
             ""

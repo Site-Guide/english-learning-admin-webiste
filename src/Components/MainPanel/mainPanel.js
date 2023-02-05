@@ -1,24 +1,16 @@
 import { styled } from "@mui/system";
-import { Button, TextField } from "@mui/material";
-import { baseColor } from "../../utils/constants";
+import { baseColor, secondBase } from "../../utils/constants";
 
 export const Container = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   width: "100%",
-  padding: "2rem 0",
-
-  [theme.breakpoints.down("sm")]: {},
-}));
-
-export const DashboardBox = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexDirection: "column",
-  width: "100%",
-  height: "100%",
+  height: "auto",
+  padding: "0rem 0",
+  borderRadius: "8px",
+  // boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+  marginTop: "1rem",
 
   [theme.breakpoints.down("sm")]: {},
 }));
@@ -46,17 +38,18 @@ export const ButtonLabel = styled("label")(({ theme }) => ({
 export const MuiButton = styled("p")(({ theme }) => ({
   fontSize: "1rem",
   color: baseColor,
-  marginLeft: "10%",
+  marginLeft: "auto",
   cursor: "pointer",
 
   [theme.breakpoints.down("sm")]: {},
 }));
 
-export const loadingText = styled("p")(({ theme }) => ({
-  fontSize: "1rem",
-  color: baseColor,
-  marginLeft: "10%",
+export const SubTab = styled("p")(({ theme }) => ({
   cursor: "pointer",
+  color: "grey",
+  "&:hover": {
+    color: secondBase,
+  },
 
   [theme.breakpoints.down("sm")]: {},
 }));

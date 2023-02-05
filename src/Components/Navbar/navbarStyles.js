@@ -50,7 +50,7 @@ export const MuiButton = styled(Button)(({ theme }) => ({
   fontSize: "0.7rem",
   color: "#fff",
   background: baseColor,
-  marginLeft: "70%",
+  marginLeft: "auto",
   cursor: "pointer",
 
   "&:hover": {

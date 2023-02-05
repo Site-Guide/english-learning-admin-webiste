@@ -17,6 +17,7 @@ import {
 function Auth() {
   const [signUp, setSignUp] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [signUpForm, setSignUpForm] = useState({
     name: "",
     email: "",
@@ -29,51 +30,64 @@ function Auth() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSignUpForm = (e, key) => {
+    setErrorMessage("");
     setSignUpForm({ ...signUpForm, [key]: e.target.value });
   };
   const handleSignInForm = (e, key) => {
+    setErrorMessage("");
     setSignInForm({ ...signInForm, [key]: e.target.value });
   };
-  const handleSignUp = async () => {
-    const acc = await account.create(
-      ID.unique(),
-      signUpForm.email,
-      signUpForm.password,
-      signUpForm.name
-    );
-    console.log("Created", acc);
-    if (acc && acc.status) {
-      dispatch(
-        setCurrentUser({
-          id: acc.$id,
-          name: acc.name,
-          email: acc.email,
-          emailVerification: acc.emailVerification,
-        })
-      );
-      navigate("/");
-    }
-  };
 
-  const handleSignIn = async () => {
-    const acc = await account.createEmailSession(
-      signInForm.email,
-      signInForm.password
-    );
-    console.log(acc);
-    if (acc && acc.userId) {
-      const user = await account.get();
-      console.log(user);
-      if (user && user.$id) {
+  const handleSignUp = async () => {
+    try {
+      const acc = await account.create(
+        ID.unique(),
+        signUpForm.email,
+        signUpForm.password,
+        signUpForm.name
+      );
+      console.log("Created", acc);
+      if (acc && acc.status) {
         dispatch(
           setCurrentUser({
             id: acc.$id,
             name: acc.name,
             email: acc.email,
+            emailVerification: acc.emailVerification,
           })
         );
         navigate("/");
       }
+    } catch (err) {
+      console.log(err.message);
+      setErrorMessage(err.message);
+    }
+  };
+
+  const handleSignIn = async () => {
+    try {
+      const acc = await account.createEmailSession(
+        signInForm.email,
+        signInForm.password
+      );
+      console.log(acc);
+      if (acc && acc.userId) {
+        const user = await account.get();
+        console.log(user);
+        if (user && user.$id) {
+          dispatch(
+            setCurrentUser({
+              id: acc.$id,
+              name: acc.name,
+              email: acc.email,
+            })
+          );
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      console.log(err.message);
+      setErrorMessage(err.message);
     }
   };
 
@@ -112,6 +126,7 @@ function Auth() {
       {signUp ? (
         <MainBox>
           <HeaderText>Sign Up</HeaderText>
+          <p style={{ color: "red" }}>{errorMessage}</p>
           <MuiTextField
             id="standard-basic"
             label="Name"
@@ -145,6 +160,7 @@ function Auth() {
       ) : (
         <MainBox>
           <HeaderText>Sign In</HeaderText>
+          <p style={{ color: "red" }}>{errorMessage}</p>
           <MuiTextField
             id="standard-basic"
             label="Email"

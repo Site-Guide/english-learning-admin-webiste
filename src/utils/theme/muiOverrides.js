@@ -45,6 +45,18 @@ const MuiOverrides = () => ({
       },
     },
   },
+  MuiDialog: {
+    styleOverrides: {
+      paper: {
+        width: "600px",
+      },
+    },
+  },
+  MuiPaper: {
+    styleOverrides: {
+      root: {},
+    },
+  },
 });
 
 export default MuiOverrides;
