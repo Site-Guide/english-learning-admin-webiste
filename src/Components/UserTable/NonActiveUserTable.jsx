@@ -8,9 +8,8 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { Query } from "appwrite";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
+import { getNonActiveUserList } from "../RealTimeFunctions/userFunctions";
 import { Container } from "./userTable";
 
 const columns = [
@@ -23,8 +22,7 @@ const columns = [
   { id: "amount", label: "Amount", align: "right", minWidth: 100 },
 ];
 
-function NonActiveUserTable() {
-  const [nonActiveUserList, setNonActiveUserList] = useState([]);
+function NonActiveUserTable({ nonActiveUserList, setNonActiveUserList }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
@@ -37,18 +35,8 @@ function NonActiveUserTable() {
     setPage(0);
   };
 
-  const getUserList = async () => {
-    const response = await database.listDocuments(
-      "main",
-      "razorpay_purchases",
-      [Query.orderDesc("$createdAt")]
-    );
-    console.log(response);
-    setNonActiveUserList([...response.documents]);
-  };
-
   useEffect(() => {
-    getUserList();
+    getNonActiveUserList(setNonActiveUserList);
   }, []);
 
   return (
@@ -62,7 +50,11 @@ function NonActiveUserTable() {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth, color: "grey" }}
+                    style={{
+                      minWidth: column.minWidth,
+                      color: "grey",
+                      fontWeight: 700,
+                    }}
                   >
                     {column.label}
                   </TableCell>

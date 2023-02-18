@@ -8,29 +8,21 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { Query } from "appwrite";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
-import { Container } from "./userTable";
-
+import AddFAQModel from "../modals/AddFAQModel";
+import { getFAQs } from "../RealTimeFunctions/practiceRoomFunctions";
+import { ButtonLabel, Container } from "./practiceRoom";
 const columns = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "email", label: "Email", minWidth: 200 },
+  { id: "title", label: "Title", minWidth: 200 },
   {
-    id: "profession",
-    label: "Profession",
-    minWidth: 170,
-  },
-  {
-    id: "phone",
-    label: "Phone",
-    minWidth: 170,
-    align: "right",
+    id: "description",
+    label: "Description",
+    minWidth: 500,
   },
 ];
-
-function ActiveUserTable() {
-  const [activeUserList, setActiveUserList] = useState([]);
+function FAQ() {
+  const [titleList, setTitleList] = useState([]);
+  const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
@@ -43,19 +35,13 @@ function ActiveUserTable() {
     setPage(0);
   };
 
-  const getUserList = async () => {
-    const response = await database.listDocuments("main", "profiles", [
-      Query.orderDesc("$createdAt"),
-    ]);
-    setActiveUserList([...response.documents]);
-  };
-
   useEffect(() => {
-    getUserList();
+    getFAQs(setTitleList);
   }, []);
 
   return (
     <Container>
+      <ButtonLabel onClick={() => setOpen(true)}>+ Add new FAQ</ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -77,7 +63,7 @@ function ActiveUserTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {activeUserList
+              {titleList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
@@ -106,15 +92,22 @@ function ActiveUserTable() {
         <TablePagination
           rowsPerPageOptions={[7]}
           component="div"
-          count={activeUserList.length}
+          count={titleList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      {open && (
+        <AddFAQModel
+          open={open}
+          handleClose={() => setOpen(false)}
+          setTitleList={setTitleList}
+        />
+      )}
     </Container>
   );
 }
 
-export default ActiveUserTable;
+export default FAQ;

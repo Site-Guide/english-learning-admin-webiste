@@ -10,8 +10,9 @@ import UploadCSV from "../modals/UploadCSV";
 import UserTable from "../UserTable/NonActiveUserTable";
 import ActiveUserTable from "../UserTable/ActiveUserTable";
 import NonActiveUserTable from "../UserTable/NonActiveUserTable";
-import DailyTopics from "../AudioVideoCalls/DailyTopics";
+import DailyTopics from "../PracticeRoom/DailyTopics";
 import SetTimeSlot from "../modals/SetTimeSlot";
+import FAQ from "../PracticeRoom/FAQ";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +53,7 @@ export default function MainPanel() {
   const [openTimeSlotModal, setOpenTimeSlotModal] = React.useState(false);
   const [activeUsers, setActiveUsers] = React.useState(true);
   const [topicTab, setTopicTab] = React.useState(true);
+  const [nonActiveUserList, setNonActiveUserList] = React.useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,7 +73,7 @@ export default function MainPanel() {
           <Tab style={{ color: secondBase }} label="User" {...a11yProps(0)} />
           <Tab
             style={{ color: secondBase }}
-            label="Audio/video calls"
+            label="Practice Room"
             {...a11yProps(1)}
           />
           <Tab
@@ -102,7 +104,14 @@ export default function MainPanel() {
           </SubTab>
           <MuiButton onClick={() => setOpen(true)}>Upload CSV Data</MuiButton>
         </div>
-        {activeUsers ? <ActiveUserTable /> : <NonActiveUserTable />}
+        {activeUsers ? (
+          <ActiveUserTable />
+        ) : (
+          <NonActiveUserTable
+            nonActiveUserList={nonActiveUserList}
+            setNonActiveUserList={setNonActiveUserList}
+          />
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
         <div style={{ display: "flex" }}>
@@ -114,7 +123,7 @@ export default function MainPanel() {
           >
             Topics
           </SubTab>
-          {/* <SubTab
+          <SubTab
             onClick={() => setTopicTab(false)}
             style={{
               marginLeft: "1rem",
@@ -122,17 +131,23 @@ export default function MainPanel() {
             }}
           >
             FAQs
-          </SubTab> */}
+          </SubTab>
           <MuiButton onClick={() => setOpenTimeSlotModal(true)}>
             Set time slots
           </MuiButton>
         </div>
-        {topicTab ? <DailyTopics /> : <DailyTopics />}
+        {topicTab ? <DailyTopics /> : <FAQ />}
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Container>Notification</Container>
       </TabPanel>
-      {open && <UploadCSV open={open} handleClose={() => setOpen(false)} />}
+      {open && (
+        <UploadCSV
+          open={open}
+          handleClose={() => setOpen(false)}
+          setNonActiveUserList={setNonActiveUserList}
+        />
+      )}
       {openTimeSlotModal && (
         <SetTimeSlot
           open={openTimeSlotModal}

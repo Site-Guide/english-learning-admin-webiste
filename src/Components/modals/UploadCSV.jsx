@@ -18,8 +18,9 @@ import {
 } from "../../utils/constants";
 import { ButtonLabel } from "../MainPanel/mainPanel";
 import { Tooltip } from "@mui/material";
+import { getNonActiveUserList } from "../RealTimeFunctions/userFunctions";
 
-export default function UploadCSV({ open, handleClose }) {
+export default function UploadCSV({ open, handleClose, setNonActiveUserList }) {
   const [fileName, setFileName] = React.useState("");
   const [emails, setEmails] = React.useState([]);
   const [readyToSend, setReadyToSend] = React.useState(false);
@@ -64,6 +65,7 @@ export default function UploadCSV({ open, handleClose }) {
         EMAIL_FUNCTION_ID,
         `{\n        "emails": [${emailString}],\n        "subject": "${EMAIL_SUBJECT}",\n        "message": "${EMAIL_BODY}"\n}`
       );
+      await getNonActiveUserList(setNonActiveUserList);
       setReadyToSend(true);
       setLoading(false);
       handleClose();

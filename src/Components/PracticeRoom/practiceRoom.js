@@ -15,7 +15,6 @@ export const Container = styled("div")(({ theme }) => ({
 
 export const ButtonLabel = styled("label")(({ theme }) => ({
   background: baseColor,
-  width: "10%",
   color: "#fff",
   margin: "15px 0",
   marginLeft: "auto",
@@ -24,7 +23,7 @@ export const ButtonLabel = styled("label")(({ theme }) => ({
   justifyContent: "center",
   borderRadius: "4px",
   cursor: "pointer",
-  fontSize: "0.7rem",
+  fontSize: "0.9rem",
   padding: "0.2rem 0.5rem",
 
   "&:hover": {

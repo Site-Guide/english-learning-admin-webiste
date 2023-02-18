@@ -9,10 +9,11 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { ButtonLabel, Container } from "./audioVideoCalls";
+import { ButtonLabel, Container } from "./practiceRoom";
 import { Query } from "appwrite";
 import { database } from "../../appwrite";
 import AddTopicModal from "../modals/AddTopicModal";
+import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
 const columns = [
   { id: "date", label: "Date", minWidth: 170 },
   { id: "topic", label: "Topic", minWidth: 200 },
@@ -37,20 +38,13 @@ function DailyTopics() {
     setPage(0);
   };
 
-  const getUserList = async () => {
-    const response = await database.listDocuments("main", "topics", [
-      Query.orderDesc("$createdAt"),
-    ]);
-    setTopicList([...response.documents]);
-  };
-
   useEffect(() => {
-    getUserList();
+    getTopicList(setTopicList);
   }, []);
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new</ButtonLabel>
+      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -60,7 +54,11 @@ function DailyTopics() {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth }}
+                    style={{
+                      minWidth: column.minWidth,
+                      color: "grey",
+                      fontWeight: 700,
+                    }}
                   >
                     {column.label}
                   </TableCell>
@@ -104,7 +102,13 @@ function DailyTopics() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      {open && <AddTopicModal open={open} handleClose={() => setOpen(false)} />}
+      {open && (
+        <AddTopicModal
+          open={open}
+          handleClose={() => setOpen(false)}
+          setTopicList={setTopicList}
+        />
+      )}
     </Container>
   );
 }
