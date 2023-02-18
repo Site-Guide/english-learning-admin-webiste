@@ -76,11 +76,11 @@ export default function MainPanel() {
             label="Practice Room"
             {...a11yProps(1)}
           />
-          <Tab
+          {/* <Tab
             style={{ color: secondBase }}
             label="Notification"
             {...a11yProps(2)}
-          />
+          /> */}
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
