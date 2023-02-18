@@ -138,9 +138,9 @@ export default function MainPanel() {
         </div>
         {topicTab ? <DailyTopics /> : <FAQ />}
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      {/* <TabPanel value={value} index={2}>
         <Container>Notification</Container>
-      </TabPanel>
+      </TabPanel> */}
       {open && (
         <UploadCSV
           open={open}
