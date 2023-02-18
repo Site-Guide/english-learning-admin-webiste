@@ -132,6 +132,21 @@ export default function SetTimeSlot({ open, handleClose }) {
           >
             Add
           </Button>
+          {data != "" && (
+            <Button
+              style={{
+                color: baseColor,
+                margin: "10px 10px",
+                border: `2px solid ${baseColor}`,
+              }}
+              onClick={() => {
+                setData("");
+                setDone(true);
+              }}
+            >
+              Clear
+            </Button>
+          )}
         </DialogContentText>
         {data}
       </DialogContent>

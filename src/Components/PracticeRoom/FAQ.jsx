@@ -12,12 +12,20 @@ import React, { useEffect, useState } from "react";
 import AddFAQModel from "../modals/AddFAQModel";
 import { getFAQs } from "../RealTimeFunctions/practiceRoomFunctions";
 import { ButtonLabel, Container } from "./practiceRoom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { database } from "../../appwrite";
+
 const columns = [
   { id: "title", label: "Title", minWidth: 200 },
   {
     id: "description",
     label: "Description",
     minWidth: 500,
+  },
+  {
+    id: "actions",
+    label: "",
+    minWidth: 50,
   },
 ];
 function FAQ() {
@@ -33,6 +41,11 @@ function FAQ() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const deleteRow = async (id) => {
+    await database.deleteDocument("main", "faqs", id);
+    await getFAQs(setTitleList);
   };
 
   useEffect(() => {
@@ -66,6 +79,15 @@ function FAQ() {
               {titleList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
+                  row.actions = (
+                    <DeleteIcon
+                      style={{
+                        cursor: "pointer",
+                        color: "darkorange",
+                      }}
+                      onClick={(e) => deleteRow(row.$id)}
+                    />
+                  );
                   return (
                     <TableRow
                       hover

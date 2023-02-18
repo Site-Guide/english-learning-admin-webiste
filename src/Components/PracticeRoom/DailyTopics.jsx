@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Paper,
   Table,
@@ -9,11 +9,11 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { ButtonLabel, Container } from "./practiceRoom";
-import { Query } from "appwrite";
+import React, { useEffect, useState } from "react";
 import { database } from "../../appwrite";
 import AddTopicModal from "../modals/AddTopicModal";
 import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
+import { ButtonLabel, Container } from "./practiceRoom";
 const columns = [
   { id: "date", label: "Date", minWidth: 170 },
   { id: "topic", label: "Topic", minWidth: 200 },
@@ -21,6 +21,11 @@ const columns = [
     id: "description",
     label: "Description",
     minWidth: 500,
+  },
+  {
+    id: "actions",
+    label: "",
+    minWidth: 50,
   },
 ];
 function DailyTopics() {
@@ -36,6 +41,11 @@ function DailyTopics() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const deleteRow = async (id) => {
+    await database.deleteDocument("main", "topics", id);
+    await getTopicList(setTopicList);
   };
 
   useEffect(() => {
@@ -69,6 +79,15 @@ function DailyTopics() {
               {topicList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
+                  row.actions = (
+                    <DeleteIcon
+                      style={{
+                        cursor: "pointer",
+                        color: "darkorange",
+                      }}
+                      onClick={(e) => deleteRow(row.$id)}
+                    />
+                  );
                   return (
                     <TableRow
                       hover
@@ -78,6 +97,7 @@ function DailyTopics() {
                     >
                       {columns.map((column) => {
                         const value = row[column.id];
+                        console.log(value);
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {column.format && typeof value === "number"

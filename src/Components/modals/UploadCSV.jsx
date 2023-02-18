@@ -15,6 +15,7 @@ import {
   EMAIL_FUNCTION_ID,
   EMAIL_SUBJECT,
   secondBase,
+  TEST_CSV_LINK,
 } from "../../utils/constants";
 import { ButtonLabel } from "../MainPanel/mainPanel";
 import { Tooltip } from "@mui/material";
@@ -76,7 +77,7 @@ export default function UploadCSV({ open, handleClose, setNonActiveUserList }) {
       <DialogTitle style={{ display: "flex", alignItems: "center" }}>
         Upload CSV Data
         <Tooltip title="CSV Format">
-          <a href="" target="_blank">
+          <a href={TEST_CSV_LINK} target="_blank">
             <InfoIcon
               style={{
                 marginBottom: "-0.5rem",

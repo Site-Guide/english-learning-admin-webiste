@@ -33,3 +33,11 @@ export const ButtonLabel = styled("label")(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {},
 }));
+
+export const MUIDeleteIconBox = styled("div")(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+  background: "yellow",
+  margin: "100% 0",
+  [theme.breakpoints.down("sm")]: {},
+}));

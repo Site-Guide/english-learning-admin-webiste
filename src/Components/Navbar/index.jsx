@@ -7,9 +7,11 @@ import {
   NavbarBox,
   NavbarContainer,
   NavbarHeader,
+  NavBarImg,
   NavbarPageStatus,
   NavbarPip,
 } from "./navbarStyles";
+import logo from "../../logo.svg";
 
 function Navbar() {
   const pageStatus = useSelector((state) => state.pageStatusReducer);
@@ -28,6 +30,7 @@ function Navbar() {
   return (
     <NavbarContainer>
       <NavbarBox>
+        <NavBarImg src={logo}></NavBarImg>
         <NavbarHeader>Admin Panel</NavbarHeader>
         <NavbarPip>|</NavbarPip>
         <NavbarPageStatus>{pageStatus.status}</NavbarPageStatus>

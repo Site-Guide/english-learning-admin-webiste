@@ -60,3 +60,11 @@ export const MuiButton = styled(Button)(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {},
 }));
+
+export const NavBarImg = styled("img")(({ theme }) => ({
+  height: "2rem",
+  width: "2rem",
+  objectFit: "contain",
+  marginRight: "1rem",
+  [theme.breakpoints.down("sm")]: {},
+}));
