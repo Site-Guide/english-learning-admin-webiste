@@ -17,12 +17,17 @@ import AddTopicModal from "../modals/AddTopicModal";
 import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
 import { ButtonLabel, Container } from "./practiceRoom";
 const columns = [
-  { id: "date", label: "Date", minWidth: 170 },
-  { id: "name", label: "Topic", minWidth: 200 },
+  { id: "date", label: "Date", minWidth: 100 },
+  { id: "name", label: "Topic", minWidth: 180 },
   {
     id: "description",
     label: "Description",
     minWidth: 500,
+  },
+  {
+    id: "courseName",
+    label: "Course Name",
+    minWidth: 240,
   },
   {
     id: "actions",

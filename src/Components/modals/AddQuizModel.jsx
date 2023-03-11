@@ -22,6 +22,8 @@ export default function AddQuizModel({
   setQuizList,
   currentQuiz,
   quizList,
+  currentContentId,
+  setPrevQuiz,
 }) {
   const [loading, setLoading] = React.useState(false);
   const [audio, setAudio] = React.useState(false);
@@ -31,7 +33,8 @@ export default function AddQuizModel({
     options: "",
     audio: "",
     ans: "",
-    index: quizList.length + 1,
+    index: currentContentId !== null ? -2 : quizList.length + 1,
+    contentId: currentContentId,
   });
   const [currentAns, setCurrentAns] = React.useState(0);
   const [audioName, setAudioName] = React.useState("");
@@ -59,6 +62,9 @@ export default function AddQuizModel({
       await database.createDocument("main", "quiz_questions", ID.unique(), req);
     }
     await getQuiz(setQuizList);
+    if (setPrevQuiz != undefined) {
+      setPrevQuiz(true);
+    }
     setLoading(false);
     handleClose();
   };

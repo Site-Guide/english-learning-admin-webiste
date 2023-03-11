@@ -40,7 +40,7 @@ export default function AddSections({ open, handleClose, currentCourseId }) {
 
   const getAllSections = async () => {
     const response = await database.listDocuments("main", "sections", [
-      Query.orderDesc("$createdAt"),
+      Query.equal("courseId", currentCourseId),
     ]);
     setSections([...response.documents]);
   };
@@ -100,7 +100,7 @@ export default function AddSections({ open, handleClose, currentCourseId }) {
           Cancel
         </Button>
         <Button
-          disabled={!loading}
+          disabled={loading}
           style={{ color: baseColor }}
           onClick={handleClose}
         >

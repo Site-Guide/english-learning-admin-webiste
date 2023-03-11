@@ -67,10 +67,9 @@ export default function DisParticipants({
       ]);
       setPartList(pa.documents);
     } else {
-      const pa = await database.listDocuments("main", "profiles", [
-        Query.notEqual("isAdmin", true),
-      ]);
-      setPartList(pa.documents);
+      const pa = await database.listDocuments("main", "profiles");
+      const part = pa?.documents?.filter((fil) => fil.isAdmin == null);
+      setPartList(part);
     }
   };
   React.useEffect(() => {

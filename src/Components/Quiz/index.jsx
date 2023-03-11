@@ -10,7 +10,6 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-// import AddQuizModel from "../modals/AddQuizModel";
 import { getQuiz } from "../RealTimeFunctions/quiz";
 import { ButtonLabel, Container, SaveOrderLabel } from "./quiz";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -164,6 +163,7 @@ function Quiz() {
           setQuizList={setQuizList}
           currentQuiz={currentQuiz}
           quizList={quizList}
+          currentContentId={null}
         />
       )}
     </Container>

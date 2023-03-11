@@ -59,6 +59,7 @@ export default function AddCourse({
     setLoading(false);
     if (sections) {
       setOpenSection(true);
+      setReadyToSend(true);
     } else {
       handleClose();
     }

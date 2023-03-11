@@ -126,6 +126,23 @@ const MuiOverrides = () => ({
       },
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        MuiSelect: {
+          root: {
+            "&.Mui-focused": {
+              MuiOutlinedInput: {
+                notchedOutline: {
+                  borderColor: baseColor,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 });
 
 export default MuiOverrides;

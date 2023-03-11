@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,16 +13,20 @@ import * as React from "react";
 import { database } from "../../appwrite";
 import { baseColor, secondBase } from "../../utils/constants";
 import { MuiTextField } from "../auth/authStyle";
+import { ButtonLabel } from "../PracticeRoom/practiceRoom";
 import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
+import AddTopicCourses from "./AddTopicCourse";
 
 export default function AddTopicModal({ open, handleClose, setTopicList }) {
   const [readyToSend, setReadyToSend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [openCourse, setOpenCourse] = React.useState(false);
   const [value, setValue] = React.useState(null);
   const [data, setData] = React.useState({
     date: null,
-    topic: "",
+    name: "",
     description: "",
+    courseId: "",
   });
 
   const handleTopicForm = (value, key) => {
@@ -49,12 +53,17 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
   };
 
   React.useEffect(() => {
-    if (data.topic !== "" && data.description !== "" && data.date !== null) {
+    if (
+      data.topic !== "" &&
+      data.description !== "" &&
+      data.date !== null &&
+      data.courseId !== ""
+    ) {
       setReadyToSend(true);
     } else {
       setReadyToSend(false);
     }
-  }, [data.topic, data.date, data.description]);
+  }, [data.topic, data.date, data.description, data.courseId]);
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle style={{ display: "flex", alignItems: "center" }}>
@@ -74,21 +83,34 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
           <MuiTextField
             style={{ width: "100%" }}
             id="standard-basic"
-            label="Topic"
+            label="Topic Name"
             variant="standard"
             autoFocus={false}
-            onChange={(e) => handleTopicForm(e.target.value, "topic")}
+            onChange={(e) => handleTopicForm(e.target.value, "name")}
           />
           <MuiTextField
             style={{ width: "100%" }}
             id="standard-basic"
-            label="Description"
+            label="Topic Description"
             variant="standard"
             autoFocus={false}
             multiline
             rows={3}
             onChange={(e) => handleTopicForm(e.target.value, "description")}
           />
+          <Tooltip
+            title={
+              data.courseId === "" ? "No Course Selected" : data.courseName
+            }
+            placement="left"
+          >
+            <ButtonLabel
+              style={{ marginLeft: "auto", width: "30%" }}
+              onClick={() => setOpenCourse(true)}
+            >
+              Add Course
+            </ButtonLabel>
+          </Tooltip>
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -103,6 +125,14 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
           {loading ? "Adding.." : "Done"}
         </Button>
       </DialogActions>
+      {openCourse && (
+        <AddTopicCourses
+          open={openCourse}
+          handleClose={() => setOpenCourse(false)}
+          data={data}
+          setData={setData}
+        />
+      )}
     </Dialog>
   );
 }
