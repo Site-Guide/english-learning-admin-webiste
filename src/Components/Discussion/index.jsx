@@ -9,31 +9,40 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import chroma from "chroma-js";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
+import { database, storage } from "../../appwrite";
+import AddDiscussion from "../modals/AddDiscussion";
+import { getDiscussion } from "../RealTimeFunctions/discussion";
+import { ButtonLabel, Container, DisImage } from "./discussion";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import chroma from "chroma-js";
 import { baseColor } from "../../utils/constants";
-import AddTopicModal from "../modals/AddTopicModal";
-import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
-import { ButtonLabel, Container } from "./practiceRoom";
+
 const columns = [
-  { id: "date", label: "Date", minWidth: 170 },
-  { id: "name", label: "Topic", minWidth: 200 },
+  { id: "index", label: "Index", minWidth: 30 },
+  { id: "viewImage", label: "Image", minWidth: 50 },
+  { id: "title", label: "Title", minWidth: 250 },
   {
     id: "description",
     label: "Description",
     minWidth: 500,
   },
   {
-    id: "actions",
+    id: "edit",
+    label: "",
+    minWidth: 50,
+  },
+  {
+    id: "delete",
     label: "",
     minWidth: 50,
   },
 ];
-function DailyTopics() {
-  const [topicList, setTopicList] = useState([]);
+function Discussion() {
+  const [disList, setDisList] = useState([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
+  const [currentDis, setCurrentDis] = React.useState({});
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
   const handleChangePage = (event, newPage) => {
@@ -45,18 +54,28 @@ function DailyTopics() {
     setPage(0);
   };
 
-  const deleteRow = async (id) => {
-    await database.deleteDocument("main", "topics", id);
-    await getTopicList(setTopicList);
+  const deleteRow = async (id, fileId) => {
+    await database.deleteDocument("main", "discussions", id);
+    if (fileId != "") {
+      await storage.deleteFile("discussions", fileId);
+    }
+    await getDiscussion(setDisList);
   };
 
   useEffect(() => {
-    getTopicList(setTopicList);
+    getDiscussion(setDisList);
   }, []);
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
+      <ButtonLabel
+        onClick={() => {
+          setOpen(true);
+          setCurrentDis({});
+        }}
+      >
+        + Create Discussion
+      </ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -78,16 +97,40 @@ function DailyTopics() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {topicList
+              {disList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  row.actions = (
+                .map((row, index) => {
+                  row.index = <p>{index + 1}</p>;
+                  row.viewImage = (
+                    <a
+                      href={storage.getFileView("discussions", row.image).href}
+                      target="_blank"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <DisImage
+                        src={storage.getFileView("discussions", row.image)}
+                      />
+                    </a>
+                  );
+                  row.edit = (
+                    <ModeEditIcon
+                      style={{
+                        cursor: "pointer",
+                        color: chroma(baseColor).darken(0.5).hex(),
+                      }}
+                      onClick={(e) => {
+                        setCurrentDis({ ...row });
+                        setOpen(true);
+                      }}
+                    />
+                  );
+                  row.delete = (
                     <DeleteIcon
                       style={{
                         cursor: "pointer",
                         color: chroma(baseColor).darken(0.5).hex(),
                       }}
-                      onClick={(e) => deleteRow(row.$id)}
+                      onClick={(e) => deleteRow(row.$id, row.image)}
                     />
                   );
                   return (
@@ -116,7 +159,7 @@ function DailyTopics() {
         <TablePagination
           rowsPerPageOptions={[7]}
           component="div"
-          count={topicList.length}
+          count={disList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -124,14 +167,16 @@ function DailyTopics() {
         />
       </Paper>
       {open && (
-        <AddTopicModal
+        <AddDiscussion
           open={open}
           handleClose={() => setOpen(false)}
-          setTopicList={setTopicList}
+          setDisList={setDisList}
+          disList={disList}
+          currentDis={currentDis}
         />
       )}
     </Container>
   );
 }
 
-export default DailyTopics;
+export default Discussion;

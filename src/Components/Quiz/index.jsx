@@ -1,4 +1,3 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Paper,
   Table,
@@ -8,30 +7,41 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
 } from "@mui/material";
-import chroma from "chroma-js";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
+// import AddQuizModel from "../modals/AddQuizModel";
+import { getQuiz } from "../RealTimeFunctions/quiz";
+import { ButtonLabel, Container, SaveOrderLabel } from "./quiz";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { database, storage } from "../../appwrite";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { MuiTextField } from "../auth/authStyle";
+import AddQuizModel from "../modals/AddQuizModel";
+import chroma from "chroma-js";
 import { baseColor } from "../../utils/constants";
-import AddTopicModal from "../modals/AddTopicModal";
-import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
-import { ButtonLabel, Container } from "./practiceRoom";
+
 const columns = [
-  { id: "date", label: "Date", minWidth: 170 },
-  { id: "name", label: "Topic", minWidth: 200 },
   {
-    id: "description",
-    label: "Description",
-    minWidth: 500,
+    id: "index",
+    label: "Index",
+    minWidth: 50,
+  },
+  { id: "question", label: "Question", minWidth: 400 },
+  {
+    id: "edit",
+    label: "",
+    minWidth: 50,
   },
   {
-    id: "actions",
+    id: "delete",
     label: "",
     minWidth: 50,
   },
 ];
-function DailyTopics() {
-  const [topicList, setTopicList] = useState([]);
+function Quiz() {
+  const [quizList, setQuizList] = useState([]);
+  const [currentQuiz, setCurrentQuiz] = useState({});
   const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
@@ -45,18 +55,30 @@ function DailyTopics() {
     setPage(0);
   };
 
-  const deleteRow = async (id) => {
-    await database.deleteDocument("main", "topics", id);
-    await getTopicList(setTopicList);
+  const deleteRow = async (id, fileId) => {
+    await database.deleteDocument("main", "quiz_questions", id);
+    if (fileId != "") {
+      await storage.deleteFile("audios", fileId);
+    }
+    await getQuiz(setQuizList);
   };
 
   useEffect(() => {
-    getTopicList(setTopicList);
+    getQuiz(setQuizList);
   }, []);
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
+      <div style={{ display: "flex" }}>
+        <ButtonLabel
+          onClick={() => {
+            setOpen(true);
+            setCurrentQuiz({});
+          }}
+        >
+          + Add new Quiz
+        </ButtonLabel>
+      </div>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -78,16 +100,28 @@ function DailyTopics() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {topicList
+              {quizList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  row.actions = (
+                .map((row, index) => {
+                  row.delete = (
                     <DeleteIcon
                       style={{
                         cursor: "pointer",
                         color: chroma(baseColor).darken(0.5).hex(),
                       }}
-                      onClick={(e) => deleteRow(row.$id)}
+                      onClick={(e) => deleteRow(row.$id, row.audio)}
+                    />
+                  );
+                  row.edit = (
+                    <ModeEditIcon
+                      style={{
+                        cursor: "pointer",
+                        color: chroma(baseColor).darken(0.5).hex(),
+                      }}
+                      onClick={(e) => {
+                        setCurrentQuiz(row);
+                        setOpen(true);
+                      }}
                     />
                   );
                   return (
@@ -116,7 +150,7 @@ function DailyTopics() {
         <TablePagination
           rowsPerPageOptions={[7]}
           component="div"
-          count={topicList.length}
+          count={quizList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -124,14 +158,16 @@ function DailyTopics() {
         />
       </Paper>
       {open && (
-        <AddTopicModal
+        <AddQuizModel
           open={open}
           handleClose={() => setOpen(false)}
-          setTopicList={setTopicList}
+          setQuizList={setQuizList}
+          currentQuiz={currentQuiz}
+          quizList={quizList}
         />
       )}
     </Container>
   );
 }
 
-export default DailyTopics;
+export default Quiz;

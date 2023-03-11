@@ -1,3 +1,4 @@
+import chroma from "chroma-js";
 import { baseColor, secondBase } from "../constants";
 
 const MuiOverrides = () => ({
@@ -114,6 +115,14 @@ const MuiOverrides = () => ({
         "&:hover": {
           backgroundColor: baseColor,
         },
+      },
+    },
+  },
+  MuiTabs: {
+    styleOverrides: {
+      indicator: {
+        backgroundColor: chroma(baseColor).darken(0.5).hex(),
+        height: "3px",
       },
     },
   },

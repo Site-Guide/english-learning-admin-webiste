@@ -14,6 +14,8 @@ import { getFAQs } from "../RealTimeFunctions/practiceRoomFunctions";
 import { ButtonLabel, Container } from "./practiceRoom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { database } from "../../appwrite";
+import chroma from "chroma-js";
+import { baseColor } from "../../utils/constants";
 
 const columns = [
   { id: "title", label: "Title", minWidth: 200 },
@@ -83,7 +85,7 @@ function FAQ() {
                     <DeleteIcon
                       style={{
                         cursor: "pointer",
-                        color: "darkorange",
+                        color: chroma(baseColor).darken(0.5).hex(),
                       }}
                       onClick={(e) => deleteRow(row.$id)}
                     />

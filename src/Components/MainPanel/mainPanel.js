@@ -53,3 +53,25 @@ export const SubTab = styled("p")(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {},
 }));
+
+export const AdminsList = styled("p")(({ theme }) => ({
+  padding: "1rem 10px",
+  borderBottom: "2px solid lightgrey",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  cursor: "pointer",
+  transition: "all 0.2s ease-in-out",
+  "&:hover": {
+    backgroundColor: "#d3d3d3",
+  },
+
+  [theme.breakpoints.down("sm")]: {},
+}));
+
+export const AdminCheckboxes = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+
+  [theme.breakpoints.down("sm")]: {},
+}));

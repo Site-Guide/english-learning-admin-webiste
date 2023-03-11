@@ -26,7 +26,9 @@ export const NavbarHeader = styled("p")(({ theme }) => ({
   fontWeight: 800,
   //   color: baseColor,
 
-  [theme.breakpoints.down("sm")]: {},
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+  },
 }));
 
 export const NavbarPip = styled("p")(({ theme }) => ({
@@ -35,7 +37,9 @@ export const NavbarPip = styled("p")(({ theme }) => ({
   color: baseColor,
   margin: "0 1rem",
 
-  [theme.breakpoints.down("sm")]: {},
+  [theme.breakpoints.down("sm")]: {
+    display: "none",
+  },
 }));
 
 export const NavbarPageStatus = styled("p")(({ theme }) => ({
@@ -43,7 +47,9 @@ export const NavbarPageStatus = styled("p")(({ theme }) => ({
   fontWeight: 600,
   color: baseColor,
 
-  [theme.breakpoints.down("sm")]: {},
+  [theme.breakpoints.down("sm")]: {
+    display: "none",
+  },
 }));
 
 export const MuiButton = styled(Button)(({ theme }) => ({

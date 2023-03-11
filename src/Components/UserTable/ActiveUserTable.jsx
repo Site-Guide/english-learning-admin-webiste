@@ -47,7 +47,9 @@ function ActiveUserTable() {
     const response = await database.listDocuments("main", "profiles", [
       Query.orderDesc("$createdAt"),
     ]);
-    setActiveUserList([...response.documents]);
+    setActiveUserList([
+      ...response.documents.filter((res) => res && res.isAdmin != true),
+    ]);
   };
 
   useEffect(() => {

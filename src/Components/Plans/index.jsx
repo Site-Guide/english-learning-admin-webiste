@@ -11,27 +11,38 @@ import {
 } from "@mui/material";
 import chroma from "chroma-js";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
+import { database, storage } from "../../appwrite";
 import { baseColor } from "../../utils/constants";
-import AddTopicModal from "../modals/AddTopicModal";
-import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
-import { ButtonLabel, Container } from "./practiceRoom";
+import AddPlans from "../modals/AddPlans";
+import { getPlans } from "../RealTimeFunctions/plans";
+import { ButtonLabel, Container } from "./plans";
+
 const columns = [
-  { id: "date", label: "Date", minWidth: 170 },
-  { id: "name", label: "Topic", minWidth: 200 },
+  { id: "index", label: "Index", minWidth: 30 },
+  { id: "name", label: "Name", minWidth: 200 },
   {
     id: "description",
     label: "Description",
-    minWidth: 500,
+    minWidth: 350,
   },
   {
-    id: "actions",
+    id: "price",
+    label: "Price",
+    minWidth: 100,
+  },
+  {
+    id: "calls",
+    label: "Calls",
+    minWidth: 100,
+  },
+  {
+    id: "delete",
     label: "",
     minWidth: 50,
   },
 ];
-function DailyTopics() {
-  const [topicList, setTopicList] = useState([]);
+function Plans() {
+  const [plans, setPlans] = useState([]);
   const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
@@ -45,18 +56,21 @@ function DailyTopics() {
     setPage(0);
   };
 
-  const deleteRow = async (id) => {
-    await database.deleteDocument("main", "topics", id);
-    await getTopicList(setTopicList);
+  const deleteRow = async (id, fileId) => {
+    await database.deleteDocument("main", "discussions", id);
+    if (fileId != "") {
+      await storage.deleteFile("discussions", fileId);
+    }
+    await getPlans(setPlans);
   };
 
   useEffect(() => {
-    getTopicList(setTopicList);
+    getPlans(setPlans);
   }, []);
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
+      <ButtonLabel onClick={() => setOpen(true)}>+ Create Plans</ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -78,16 +92,17 @@ function DailyTopics() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {topicList
+              {plans
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  row.actions = (
+                .map((row, index) => {
+                  row.index = <p>{index + 1}</p>;
+                  row.delete = (
                     <DeleteIcon
                       style={{
                         cursor: "pointer",
                         color: chroma(baseColor).darken(0.5).hex(),
                       }}
-                      onClick={(e) => deleteRow(row.$id)}
+                      onClick={(e) => deleteRow(row.$id, row.image)}
                     />
                   );
                   return (
@@ -116,7 +131,7 @@ function DailyTopics() {
         <TablePagination
           rowsPerPageOptions={[7]}
           component="div"
-          count={topicList.length}
+          count={plans.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -124,14 +139,15 @@ function DailyTopics() {
         />
       </Paper>
       {open && (
-        <AddTopicModal
+        <AddPlans
           open={open}
           handleClose={() => setOpen(false)}
-          setTopicList={setTopicList}
+          setPlans={setPlans}
+          plans={plans}
         />
       )}
     </Container>
   );
 }
 
-export default DailyTopics;
+export default Plans;

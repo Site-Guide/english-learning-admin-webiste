@@ -2,9 +2,11 @@ import { ID } from "appwrite";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { account } from "../../appwrite";
+import { account, database } from "../../appwrite";
 import { setCurrentUser } from "../../redux/actions/authAction";
 import { setPageStatus } from "../../redux/actions/pageStatusAction";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Container,
   HeaderText,
@@ -13,10 +15,13 @@ import {
   MuiTextField,
   SubText,
 } from "./authStyle";
+import { InputAdornment } from "@mui/material";
+import { baseColor } from "../../utils/constants";
 
 function Auth() {
   const [signUp, setSignUp] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [signUpForm, setSignUpForm] = useState({
     name: "",
@@ -48,12 +53,23 @@ function Auth() {
       );
       console.log("Created", acc);
       if (acc && acc.status) {
+        await database.createDocument("main", "profiles", acc.$id, {
+          name: acc.name,
+          email: acc.email,
+          phone: "",
+          whatsapp: "",
+          profession: "",
+          purpose: "",
+          role: "",
+          isAdmin: true,
+        });
         dispatch(
           setCurrentUser({
             id: acc.$id,
             name: acc.name,
             email: acc.email,
-            emailVerification: acc.emailVerification,
+            role: "",
+            isAdmin: true,
           })
         );
         navigate("/");
@@ -70,16 +86,27 @@ function Auth() {
         signInForm.email,
         signInForm.password
       );
-      console.log(acc);
       if (acc && acc.userId) {
         const user = await account.get();
         console.log(user);
         if (user && user.$id) {
+          const currUser = await database.getDocument(
+            "main",
+            "profiles",
+            user.$id
+          );
           dispatch(
             setCurrentUser({
-              id: acc.$id,
-              name: acc.name,
-              email: acc.email,
+              id: user.$id,
+              name: user.name,
+              email: user.email,
+              role:
+                user.email === "root@engexpert.com"
+                  ? { all: "all" }
+                  : JSON.parse(currUser.role),
+              isAdmin:
+                user.email === "root@engexpert.com" ? 1 : currUser.isAdmin,
+              isRootUser: user.email === "root@engexpert.com" ? true : false,
             })
           );
           navigate("/");
@@ -96,18 +123,34 @@ function Auth() {
     try {
       const acc = await account.get();
       console.log("USER", acc);
-      if (acc && acc.$id) {
-        dispatch(
-          setCurrentUser({
-            id: acc.$id,
-            name: acc.name,
-            email: acc.email,
-          })
-        );
-        setLoading(false);
-        navigate("/");
+      if (acc && !acc.emailVerification) {
+        navigate("/accountVerification");
       } else {
-        dispatch(setPageStatus("Welcome"));
+        if (acc && acc.$id) {
+          const currUser = await database.getDocument(
+            "main",
+            "profiles",
+            acc.$id
+          );
+          dispatch(
+            setCurrentUser({
+              id: acc.$id,
+              name: acc.name,
+              email: acc.email,
+              role:
+                acc.email === "root@engexpert.com"
+                  ? { all: "all" }
+                  : JSON.parse(currUser.role),
+              isAdmin:
+                acc.email === "root@engexpert.com" ? 1 : currUser.isAdmin,
+              isRootUser: acc.email === "root@engexpert.com" ? true : false,
+            })
+          );
+          setLoading(false);
+          navigate("/");
+        } else {
+          dispatch(setPageStatus("Welcome"));
+        }
       }
     } catch {
       setLoading(false);
@@ -144,10 +187,21 @@ function Auth() {
           <MuiTextField
             id="standard-basic"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             variant="standard"
             autoFocus={false}
             onChange={(e) => handleSignUpForm(e, "password")}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ color: baseColor, cursor: "pointer" }}
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </InputAdornment>
+              ),
+            }}
           />
           <MuiButton onClick={handleSignUp}>Submit</MuiButton>
           <div
@@ -171,10 +225,21 @@ function Auth() {
           <MuiTextField
             id="standard-basic"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             variant="standard"
             autoFocus={false}
             onChange={(e) => handleSignInForm(e, "password")}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ color: baseColor, cursor: "pointer" }}
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </InputAdornment>
+              ),
+            }}
           />
           <MuiButton onClick={handleSignIn}>Submit</MuiButton>
           <div

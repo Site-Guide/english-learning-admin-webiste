@@ -4,50 +4,39 @@ import { baseColor } from "../../utils/constants";
 
 export const Container = styled("div")(({ theme }) => ({
   display: "flex",
-  alignItems: "center",
   justifyContent: "center",
+  flexDirection: "column",
   width: "100%",
   height: "85%",
-
+  marginTop: "-20px",
   [theme.breakpoints.down("sm")]: {},
 }));
 
-export const MainBox = styled("div")(({ theme }) => ({
+export const ButtonLabel = styled("label")(({ theme }) => ({
+  background: baseColor,
+  color: "#fff",
+  margin: "15px 0",
+  marginLeft: "auto",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  flexDirection: "column",
-  width: "40%",
-  padding: "1rem 0",
-  borderRadius: "8px",
-  boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-
-  [theme.breakpoints.down("md")]: {
-    width: "80%",
-  },
-}));
-
-export const HeaderText = styled("p")(({ theme }) => ({
-  color: baseColor,
-  fontWeight: 600,
-  margin: "15px 0",
-  fontSize: "2rem",
-  [theme.breakpoints.down("sm")]: {},
-}));
-
-export const SubText = styled("span")(({ theme }) => ({
-  color: baseColor,
-  fontWeight: 400,
-  margin: "0px 10px",
-  fontSize: "1.2rem",
+  borderRadius: "4px",
   cursor: "pointer",
+  fontSize: "0.9rem",
+  padding: "0.2rem 0.5rem",
+
+  "&:hover": {
+    background: baseColor,
+    color: "#fff",
+  },
+
   [theme.breakpoints.down("sm")]: {},
 }));
 
 export const MuiTextField = styled(TextField)(({ theme }) => ({
   width: "80%",
   color: "black",
-  margin: "15px 0",
+  margin: "5px 0",
   [theme.breakpoints.down("sm")]: {},
 }));
 

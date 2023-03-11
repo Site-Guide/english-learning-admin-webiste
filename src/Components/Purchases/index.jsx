@@ -1,5 +1,5 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -8,31 +8,50 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
 } from "@mui/material";
-import chroma from "chroma-js";
 import React, { useEffect, useState } from "react";
-import { database } from "../../appwrite";
+import { getPurchases } from "../RealTimeFunctions/plans";
+import { Container } from "./purchases";
+import CopyAllIcon from "@mui/icons-material/CopyAll";
 import { baseColor } from "../../utils/constants";
-import AddTopicModal from "../modals/AddTopicModal";
-import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
-import { ButtonLabel, Container } from "./practiceRoom";
+
 const columns = [
-  { id: "date", label: "Date", minWidth: 170 },
-  { id: "name", label: "Topic", minWidth: 200 },
+  { id: "index", label: "Index", minWidth: 30 },
+  { id: "type", label: "Type", minWidth: 50 },
   {
-    id: "description",
-    label: "Description",
-    minWidth: 500,
+    id: "calls",
+    label: "Calls",
+    minWidth: 30,
   },
   {
-    id: "actions",
-    label: "",
-    minWidth: 50,
+    id: "callsDone",
+    label: "Calls Done",
+    minWidth: 30,
+  },
+  {
+    id: "amount",
+    label: "Amount",
+    minWidth: 70,
+  },
+  {
+    id: "paymentId",
+    label: "Payment Id",
+    minWidth: 70,
+  },
+  {
+    id: "paymentStatus",
+    label: "Payment Status",
+    minWidth: 70,
+  },
+  {
+    id: "paymentMethod",
+    label: "Payment Method",
+    minWidth: 70,
   },
 ];
-function DailyTopics() {
-  const [topicList, setTopicList] = useState([]);
-  const [open, setOpen] = useState(false);
+function Purchases() {
+  const [purchases, setPurchases] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
 
@@ -45,18 +64,12 @@ function DailyTopics() {
     setPage(0);
   };
 
-  const deleteRow = async (id) => {
-    await database.deleteDocument("main", "topics", id);
-    await getTopicList(setTopicList);
-  };
-
   useEffect(() => {
-    getTopicList(setTopicList);
+    getPurchases(setPurchases);
   }, []);
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -78,18 +91,10 @@ function DailyTopics() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {topicList
+              {purchases
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  row.actions = (
-                    <DeleteIcon
-                      style={{
-                        cursor: "pointer",
-                        color: chroma(baseColor).darken(0.5).hex(),
-                      }}
-                      onClick={(e) => deleteRow(row.$id)}
-                    />
-                  );
+                .map((row, index) => {
+                  row.index = <p>{index + 1}</p>;
                   return (
                     <TableRow
                       hover
@@ -104,6 +109,23 @@ function DailyTopics() {
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
+                            {column.id === "paymentId" && (
+                              <Tooltip title="Copy PaymentId" placement="top">
+                                <Button style={{ padding: 0, margin: 0 }}>
+                                  <CopyAllIcon
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(value);
+                                    }}
+                                    style={{
+                                      height: "20px",
+                                      width: "20px",
+                                      cursor: "pointer",
+                                      color: baseColor,
+                                    }}
+                                  />
+                                </Button>
+                              </Tooltip>
+                            )}
                           </TableCell>
                         );
                       })}
@@ -116,22 +138,15 @@ function DailyTopics() {
         <TablePagination
           rowsPerPageOptions={[7]}
           component="div"
-          count={topicList.length}
+          count={purchases.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      {open && (
-        <AddTopicModal
-          open={open}
-          handleClose={() => setOpen(false)}
-          setTopicList={setTopicList}
-        />
-      )}
     </Container>
   );
 }
 
-export default DailyTopics;
+export default Purchases;
