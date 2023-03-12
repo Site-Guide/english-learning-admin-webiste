@@ -44,6 +44,7 @@ function Quiz() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
+  const [courseQuiz, setCourseQuiz] = React.useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,8 +69,15 @@ function Quiz() {
 
   return (
     <Container>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <ButtonLabel
+          style={{ margin: "20px 0" }}
+          onClick={() => setCourseQuiz(!courseQuiz)}
+        >
+          {courseQuiz ? "Hide" : "Show"} Course Quiz
+        </ButtonLabel>
+        <ButtonLabel
+          style={{ margin: "20px 0" }}
           onClick={() => {
             setOpen(true);
             setCurrentQuiz({});
@@ -123,25 +131,55 @@ function Quiz() {
                       }}
                     />
                   );
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
+                  return courseQuiz
+                    ? row.index == -2 && (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.code}
+                        >
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return column.id == "index" ? (
+                              <TableCell
+                                style={{
+                                  color: baseColor,
+                                  fontWeight: 600,
+                                  width: "50px",
+                                }}
+                              >
+                                {index + 1}
+                              </TableCell>
+                            ) : (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      )
+                    : row.index != -2 && (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.code}
+                        >
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
                 })}
             </TableBody>
           </Table>
