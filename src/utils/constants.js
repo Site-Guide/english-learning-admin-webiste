@@ -11,6 +11,7 @@ const baseColor = "#f2c702"; //Main
 const secondBase = "black";
 const EMAIL_BODY = "Hello User, You have been registered to Engexpert!";
 const EMAIL_SUBJECT = "Welcome to Engexpert";
+const MAIN_SITE = "https://engexpert.netlify.app/";
 
 export {
   PROJECT_ID,
@@ -22,4 +23,5 @@ export {
   EMAIL_FUNCTION_ID,
   TEST_CSV_LINK,
   S3_LINK_FUNCTION_ID,
+  MAIN_SITE,
 };

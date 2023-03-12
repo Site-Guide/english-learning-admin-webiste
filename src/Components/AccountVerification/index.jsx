@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { account } from "../../appwrite";
+import { MAIN_SITE } from "../../utils/constants";
 import { Container } from "./accountVerification";
 
 function AccountVerification() {
@@ -10,6 +11,9 @@ function AccountVerification() {
     console.log("USER", acc);
     if (acc && acc.emailVerification) {
       navigate("/auth");
+    } else {
+      const a = await account.createVerification(MAIN_SITE);
+      console.log(a);
     }
   };
   React.useEffect(() => {

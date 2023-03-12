@@ -72,7 +72,8 @@ function Auth() {
             isAdmin: true,
           })
         );
-        navigate("/");
+        await account.createAnonymousSession();
+        navigate("/accountVerification");
       }
     } catch (err) {
       console.log(err.message);
@@ -109,7 +110,7 @@ function Auth() {
               isRootUser: user.email === "root@engexpert.com" ? true : false,
             })
           );
-          navigate("/");
+          navigate("/accountVerification");
         }
       }
     } catch (err) {
