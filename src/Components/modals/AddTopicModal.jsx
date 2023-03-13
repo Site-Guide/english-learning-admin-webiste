@@ -34,12 +34,15 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
   };
 
   const handleChange = (newValue) => {
+    // console.log(newValue);
     const date = new Date(newValue);
     const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    const month =
-      date.getMonth() + 1 < 10 ? "" + date.getMonth() + 1 : date.getMonth() + 1;
+    let month = date.getMonth() + 1;
+    // console.log(month);
+    month = month < 10 ? "0" + month : month;
     const dateString = day + "-" + month + "-" + date.getFullYear();
     handleTopicForm(dateString, "date");
+    // console.log(dateString);
     setValue(newValue);
   };
 
@@ -53,12 +56,7 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
   };
 
   React.useEffect(() => {
-    if (
-      data.topic !== "" &&
-      data.description !== "" &&
-      data.date !== null &&
-      data.courseId !== ""
-    ) {
+    if (data.topic !== "" && data.description !== "" && data.date !== null) {
       setReadyToSend(true);
     } else {
       setReadyToSend(false);

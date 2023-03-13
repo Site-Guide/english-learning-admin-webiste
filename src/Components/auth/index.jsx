@@ -72,8 +72,8 @@ function Auth() {
             isAdmin: true,
           })
         );
-        await account.createAnonymousSession();
-        navigate("/accountVerification");
+        await account.createEmailSession(signUpForm.email, signUpForm.password);
+        navigate("/");
       }
     } catch (err) {
       console.log(err.message);
@@ -104,13 +104,15 @@ function Auth() {
               role:
                 user.email === "root@engexpert.com"
                   ? { all: "all" }
+                  : currUser.role === ""
+                  ? ""
                   : JSON.parse(currUser.role),
               isAdmin:
                 user.email === "root@engexpert.com" ? 1 : currUser.isAdmin,
               isRootUser: user.email === "root@engexpert.com" ? true : false,
             })
           );
-          navigate("/accountVerification");
+          navigate("/");
         }
       }
     } catch (err) {
@@ -124,35 +126,36 @@ function Auth() {
     try {
       const acc = await account.get();
       console.log("USER", acc);
-      if (acc && !acc.emailVerification) {
-        navigate("/accountVerification");
+      // if (acc && !acc.emailVerification) {
+      //   navigate("/");
+      // } else {
+      if (acc && acc.$id) {
+        const currUser = await database.getDocument(
+          "main",
+          "profiles",
+          acc.$id
+        );
+        dispatch(
+          setCurrentUser({
+            id: acc.$id,
+            name: acc.name,
+            email: acc.email,
+            role:
+              acc.email === "root@engexpert.com"
+                ? { all: "all" }
+                : currUser.role === ""
+                ? ""
+                : JSON.parse(currUser.role),
+            isAdmin: acc.email === "root@engexpert.com" ? 1 : currUser.isAdmin,
+            isRootUser: acc.email === "root@engexpert.com" ? true : false,
+          })
+        );
+        setLoading(false);
+        navigate("/");
       } else {
-        if (acc && acc.$id) {
-          const currUser = await database.getDocument(
-            "main",
-            "profiles",
-            acc.$id
-          );
-          dispatch(
-            setCurrentUser({
-              id: acc.$id,
-              name: acc.name,
-              email: acc.email,
-              role:
-                acc.email === "root@engexpert.com"
-                  ? { all: "all" }
-                  : JSON.parse(currUser.role),
-              isAdmin:
-                acc.email === "root@engexpert.com" ? 1 : currUser.isAdmin,
-              isRootUser: acc.email === "root@engexpert.com" ? true : false,
-            })
-          );
-          setLoading(false);
-          navigate("/");
-        } else {
-          dispatch(setPageStatus("Welcome"));
-        }
+        dispatch(setPageStatus("Welcome"));
       }
+      // }
     } catch {
       setLoading(false);
       dispatch(setPageStatus("Welcome"));
