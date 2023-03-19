@@ -123,6 +123,7 @@ export default function SetTimeSlot({ open, handleClose }) {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          <div style={{ width: "100%" }}></div>
           <Button
             style={{
               color: add ? baseColor : "grey",
