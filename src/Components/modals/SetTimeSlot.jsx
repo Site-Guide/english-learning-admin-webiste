@@ -77,6 +77,8 @@ export default function SetTimeSlot({ open, handleClose }) {
     setData(final);
     setStartValueString("");
     setEndValueString("");
+    setStartValue(null);
+    setEndValue(null);
     setDone(true);
   };
 

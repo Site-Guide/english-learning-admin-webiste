@@ -16,7 +16,6 @@ import * as React from "react";
 import { database } from "../../appwrite";
 import { baseColor, secondBase } from "../../utils/constants";
 import { ButtonLabel, MuiTextField } from "../Courses/courses";
-import { getContents } from "../RealTimeFunctions/courses";
 import AddQuizModel from "./AddQuizModel";
 import UploadTypeCourseFile from "./UploadTypeCourseFile";
 
@@ -27,6 +26,7 @@ export default function AddContent({
   currentSectionId,
   currentContent,
   setContents,
+  getContents,
 }) {
   const [loading, setLoading] = React.useState(false);
   const [openType, setOpenType] = React.useState(false);

@@ -115,19 +115,23 @@ export default function AddQuizModel({
             }}
           />
         </Tooltip>
-        <TextField
-          style={{ width: "10%", marginLeft: "auto" }}
-          id="standard-basic"
-          label="Index"
-          variant="standard"
-          autoFocus={false}
-          value={request.index}
-          type="number"
-          onChange={(e) =>
-            e.target.value > 0 &&
-            setRequest({ ...request, index: e.target.value })
-          }
-        />
+        {currentContentId !== null ? (
+          ""
+        ) : (
+          <TextField
+            style={{ width: "10%", marginLeft: "auto" }}
+            id="standard-basic"
+            label="Index"
+            variant="standard"
+            autoFocus={false}
+            value={request.index}
+            type="number"
+            onChange={(e) =>
+              e.target.value > 0 &&
+              setRequest({ ...request, index: e.target.value })
+            }
+          />
+        )}
       </DialogTitle>
       <DialogContent>
         <DialogContentText

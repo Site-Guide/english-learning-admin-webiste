@@ -27,6 +27,7 @@ export default function AddCourse({
   const [currentCourseID, setCurrentCourseID] = React.useState("");
   const [openOtherCourses, setOpenOtherCourses] = React.useState(false);
   const [openSection, setOpenSection] = React.useState(false);
+  const [sectionOpen, setSectionOpen] = React.useState(false);
   const [data, setData] = React.useState({
     title: "",
     description: "",
@@ -53,13 +54,14 @@ export default function AddCourse({
         ID.unique(),
         data
       );
-      setCurrentCourseID(course.$d);
+      setCurrentCourseID(course.$id);
     }
     await getCourses(setCourses);
     setLoading(false);
     if (sections) {
       setOpenSection(true);
       setReadyToSend(true);
+      setSectionOpen(true);
     } else {
       handleClose();
     }
@@ -208,7 +210,9 @@ export default function AddCourse({
         <Button
           disabled={!readyToSend}
           style={{ color: baseColor }}
-          onClick={() => handleCourseCreate(false)}
+          onClick={() =>
+            sectionOpen ? handleClose() : handleCourseCreate(false)
+          }
         >
           {loading
             ? currentCourse.title === undefined

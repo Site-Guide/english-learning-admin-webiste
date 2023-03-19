@@ -23,12 +23,6 @@ const columns = [
     minWidth: 50,
   },
   {
-    id: "quizTimeSpend",
-    label: "Quiz Time Spend",
-    minWidth: 50,
-    align: "right",
-  },
-  {
     id: "level",
     label: "Level",
     minWidth: 50,

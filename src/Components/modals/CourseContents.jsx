@@ -17,7 +17,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import chroma from "chroma-js";
 import AddContent from "./AddContent";
-import { getContents } from "../RealTimeFunctions/courses";
 
 export default function CourseContents({
   open,
@@ -28,6 +27,13 @@ export default function CourseContents({
   const [currentContent, setCurrentContent] = React.useState({});
   const [contents, setContents] = React.useState([]);
   const [openAdd, setOpenAdd] = React.useState(false);
+
+  const getContents = async (setState) => {
+    const response = await database.listDocuments("main", "contents", [
+      Query.equal("sectionId", currentSectionId),
+    ]);
+    setState([...response.documents]);
+  };
 
   const deleteRow = async (id) => {
     await database.deleteDocument("main", "sections", id);
@@ -91,6 +97,7 @@ export default function CourseContents({
           currentSectionId={currentSectionId}
           currentContent={currentContent}
           setContents={setContents}
+          getContents={getContents}
         />
       )}
     </Dialog>
