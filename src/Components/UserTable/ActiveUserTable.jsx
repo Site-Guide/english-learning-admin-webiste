@@ -11,20 +11,63 @@ import {
 import { Query } from "appwrite";
 import React, { useEffect, useState } from "react";
 import { database } from "../../appwrite";
+import { baseColor } from "../../utils/constants";
 import { Container } from "./userTable";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "email", label: "Email", minWidth: 200 },
+  { id: "name", label: "Name", minWidth: 100 },
+  { id: "email", label: "Email", minWidth: 100 },
   {
     id: "profession",
     label: "Profession",
-    minWidth: 170,
+    minWidth: 50,
+  },
+  {
+    id: "quizTimeSpend",
+    label: "Quiz Time Spend",
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "level",
+    label: "Level",
+    minWidth: 50,
+    align: "right",
   },
   {
     id: "phone",
     label: "Phone",
-    minWidth: 170,
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "whatsapp",
+    label: "Whatsapp",
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "purpose",
+    label: "Purpose",
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "experience",
+    label: "Experience",
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "lookingFor",
+    label: "Looking For",
+    minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "haveYou",
+    label: "Have You",
+    minWidth: 50,
     align: "right",
   },
 ];
@@ -47,9 +90,10 @@ function ActiveUserTable() {
     const response = await database.listDocuments("main", "profiles", [
       Query.orderDesc("$createdAt"),
     ]);
-    setActiveUserList([
-      ...response.documents.filter((res) => res && res.isAdmin != true),
-    ]);
+    // setActiveUserList([
+    //   ...response.documents.filter((res) => res && res.isAdmin != true),
+    // ]);
+    setActiveUserList([...response.documents]);
   };
 
   useEffect(() => {
@@ -88,6 +132,9 @@ function ActiveUserTable() {
                       role="checkbox"
                       tabIndex={-1}
                       key={row.code}
+                      style={{
+                        background: row.isAdmin && baseColor,
+                      }}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];

@@ -24,7 +24,8 @@ function Navbar() {
   const handleSignOut = async () => {
     try {
       const response = await account.listSessions();
-      await account.deleteSession(response.sessions[0].$id);
+      const ses = await account.deleteSession(response.sessions[0].$id);
+      console.log(response, ses);
       navigate("/auth");
     } catch {
       console.log("No active session found");

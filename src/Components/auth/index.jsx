@@ -62,6 +62,10 @@ function Auth() {
           purpose: "",
           role: "",
           isAdmin: true,
+          experience: "",
+          haveYou: "",
+          lookingFor: "",
+          level: "",
         });
         dispatch(
           setCurrentUser({

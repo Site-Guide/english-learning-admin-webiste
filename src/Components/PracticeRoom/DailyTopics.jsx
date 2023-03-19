@@ -16,6 +16,8 @@ import { baseColor } from "../../utils/constants";
 import AddTopicModal from "../modals/AddTopicModal";
 import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
 import { ButtonLabel, Container } from "./practiceRoom";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+
 const columns = [
   { id: "date", label: "Date", minWidth: 100 },
   { id: "name", label: "Topic", minWidth: 180 },
@@ -27,7 +29,12 @@ const columns = [
   {
     id: "courseName",
     label: "Course Name",
-    minWidth: 240,
+    minWidth: 200,
+  },
+  {
+    id: "edit",
+    label: "",
+    minWidth: 50,
   },
   {
     id: "actions",
@@ -40,6 +47,7 @@ function DailyTopics() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(7);
+  const [currentTopic, setCurrentTopic] = React.useState({});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -61,7 +69,14 @@ function DailyTopics() {
 
   return (
     <Container>
-      <ButtonLabel onClick={() => setOpen(true)}>+ Add new topic</ButtonLabel>
+      <ButtonLabel
+        onClick={() => {
+          setOpen(true);
+          setCurrentTopic({});
+        }}
+      >
+        + Add new topic
+      </ButtonLabel>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 440, minHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -93,6 +108,18 @@ function DailyTopics() {
                         color: chroma(baseColor).darken(0.5).hex(),
                       }}
                       onClick={(e) => deleteRow(row.$id)}
+                    />
+                  );
+                  row.edit = (
+                    <ModeEditIcon
+                      style={{
+                        cursor: "pointer",
+                        color: chroma(baseColor).darken(0.5).hex(),
+                      }}
+                      onClick={(e) => {
+                        setCurrentTopic({ ...row });
+                        setOpen(true);
+                      }}
                     />
                   );
                   return (
@@ -133,6 +160,7 @@ function DailyTopics() {
           open={open}
           handleClose={() => setOpen(false)}
           setTopicList={setTopicList}
+          currentTopic={currentTopic}
         />
       )}
     </Container>

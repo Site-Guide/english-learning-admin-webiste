@@ -62,7 +62,7 @@ export default function AddFAQModel({ open, handleClose, setTitleList }) {
             variant="standard"
             autoFocus={false}
             multiline
-            rows={3}
+            rows={5}
             onChange={(e) => handleTitleForm(e.target.value, "description")}
           />
         </DialogContentText>

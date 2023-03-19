@@ -17,24 +17,24 @@ import { ButtonLabel } from "../PracticeRoom/practiceRoom";
 import { getTopicList } from "../RealTimeFunctions/practiceRoomFunctions";
 import AddTopicCourses from "./AddTopicCourse";
 
-export default function AddTopicModal({ open, handleClose, setTopicList }) {
+export default function AddTopicModal({
+  open,
+  handleClose,
+  setTopicList,
+  currentTopic,
+}) {
   const [readyToSend, setReadyToSend] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [openCourse, setOpenCourse] = React.useState(false);
   const [value, setValue] = React.useState(null);
-  const [data, setData] = React.useState({
-    date: null,
-    name: "",
-    description: "",
-    courseId: "",
-  });
+  const [data, setData] = React.useState({});
 
   const handleTopicForm = (value, key) => {
     setData({ ...data, [key]: value });
   };
 
   const handleChange = (newValue) => {
-    // console.log(newValue);
+    console.log(newValue);
     const date = new Date(newValue);
     const day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
     let month = date.getMonth() + 1;
@@ -49,13 +49,34 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
   const handleTopicAdd = async () => {
     setReadyToSend(false);
     setLoading(true);
-    await database.createDocument("main", "topics", ID.unique(), data);
+    if (currentTopic.$id === undefined) {
+      await database.createDocument("main", "topics", ID.unique(), data);
+    } else {
+      await database.updateDocument("main", "topics", currentTopic.$id, data);
+    }
     await getTopicList(setTopicList);
     setLoading(false);
     handleClose();
   };
 
   React.useEffect(() => {
+    setData({
+      date: currentTopic.$id === undefined ? null : currentTopic.date,
+      name: currentTopic.$id === undefined ? "" : currentTopic.name,
+      description:
+        currentTopic.$id === undefined ? "" : currentTopic.description,
+      courseId: currentTopic.$id === undefined ? "" : currentTopic.courseId,
+      courseName: currentTopic.$id === undefined ? "" : currentTopic.courseName,
+    });
+    if (currentTopic.$id !== undefined) {
+      const dateArr = currentTopic.date.split("-").reverse().join("-");
+      const d = new Date(dateArr).getTime();
+      setValue(d);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    console.log(currentTopic);
     if (data.topic !== "" && data.description !== "" && data.date !== null) {
       setReadyToSend(true);
     } else {
@@ -83,6 +104,7 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
             id="standard-basic"
             label="Topic Name"
             variant="standard"
+            value={data.name}
             autoFocus={false}
             onChange={(e) => handleTopicForm(e.target.value, "name")}
           />
@@ -93,7 +115,8 @@ export default function AddTopicModal({ open, handleClose, setTopicList }) {
             variant="standard"
             autoFocus={false}
             multiline
-            rows={3}
+            value={data.description}
+            rows={5}
             onChange={(e) => handleTopicForm(e.target.value, "description")}
           />
           <Tooltip
