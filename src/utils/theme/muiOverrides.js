@@ -143,6 +143,29 @@ const MuiOverrides = () => ({
       },
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      notchedOutline: {
+        // borderWidth: "1px !important",
+        borderColor: `${baseColor} !important`
+      }
+    }
+
+
+  },
+
+  Mui: {
+    focused: {
+      MuiOutlinedInput: {
+        styleOverrides: {
+          notchedOutline: {
+            // borderWidth: "1px !important",
+            borderColor: `${baseColor} !important`,
+          }
+        }
+      }
+    }
+  }
 });
 
 export default MuiOverrides;

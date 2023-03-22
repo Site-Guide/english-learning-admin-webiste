@@ -23,9 +23,34 @@ const columns = [
     minWidth: 50,
   },
   {
+    id: "experience",
+    label: "Experience",
+    minWidth: 50,
+    align: "right",
+  },
+  {
     id: "level",
     label: "Level",
     minWidth: 50,
+    align: "right",
+  },
+  {
+    id: "purpose",
+    label: "Purpose",
+    minWidth: 200,
+    align: "right",
+  },
+
+  {
+    id: "lookingFor",
+    label: "Looking For",
+    minWidth: 200,
+    align: "right",
+  },
+  {
+    id: "haveYou",
+    label: "Have You",
+    minWidth: 200,
     align: "right",
   },
   {
@@ -37,30 +62,6 @@ const columns = [
   {
     id: "whatsapp",
     label: "Whatsapp",
-    minWidth: 50,
-    align: "right",
-  },
-  {
-    id: "purpose",
-    label: "Purpose",
-    minWidth: 50,
-    align: "right",
-  },
-  {
-    id: "experience",
-    label: "Experience",
-    minWidth: 50,
-    align: "right",
-  },
-  {
-    id: "lookingFor",
-    label: "Looking For",
-    minWidth: 50,
-    align: "right",
-  },
-  {
-    id: "haveYou",
-    label: "Have You",
     minWidth: 50,
     align: "right",
   },

@@ -30,13 +30,16 @@ export default function AddDiscussion({
   const [addAdmins, setAddAdmins] = React.useState(false);
   const [openParticipants, setOpenParticipants] = React.useState(false);
   const [value, setValue] = React.useState(null);
+  const [courseSelectedUsers, setCourseSelectedUsers] = React.useState([]);
+  const [courseDiscussion, setCourseDiscussion] = React.useState([]);
   const [data, setData] = React.useState({
     title: "",
     description: "",
     image: "",
-    participants: "",
-    admins: "",
+    participants: [],
+    admins: [],
     active: true,
+    courseSelected: [],
   });
 
   const handleDisForm = (value, key) => {
@@ -46,15 +49,22 @@ export default function AddDiscussion({
   const handleDisCreate = async () => {
     setReadyToSend(false);
     setLoading(true);
-    if (currentDis.$id != undefined) {
-      await database.updateDocument(
-        "main",
-        "discussions",
-        currentDis.$id,
-        data
-      );
+    let req = {};
+    if (courseSelectedUsers.length > 0) {
+      req = {
+        ...data,
+        participants: [...data.participants, ...courseSelectedUsers],
+        courseSelected: [...courseDiscussion],
+      };
     } else {
-      await database.createDocument("main", "discussions", ID.unique(), data);
+      req = {
+        ...data,
+      };
+    }
+    if (currentDis.$id != undefined) {
+      await database.updateDocument("main", "discussions", currentDis.$id, req);
+    } else {
+      await database.createDocument("main", "discussions", ID.unique(), req);
     }
 
     await getDiscussion(setDisList);
@@ -71,6 +81,7 @@ export default function AddDiscussion({
         participants: currentDis.participants,
         admins: currentDis.admins,
         active: currentDis.active,
+        courseSelected: currentDis.courseSelected,
       });
     }
   }, []);
@@ -168,6 +179,9 @@ export default function AddDiscussion({
           data={data}
           setData={setData}
           addAdmins={addAdmins}
+          currentDis={currentDis}
+          setCourseSelectedUsers={setCourseSelectedUsers}
+          setCourseDiscussion={setCourseDiscussion}
         />
       )}
     </Dialog>
