@@ -1,4 +1,0 @@
-export const SET_CURRENT_USER = "SET_CURRENT_USER";
-export const GET_CURRENT_USER = "GET_CURRENT_USER";
-export const SET_PAGE_STATUS = "SET_PAGE_STATUS";
-export const GET_PAGE_STATUS = "GET_PAGE_STATUS";
